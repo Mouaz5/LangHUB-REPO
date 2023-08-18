@@ -37,11 +37,12 @@ class HomeTeacherController extends Controller
         ->get();
         $academiesByLocation = Academy::where('location' , 'like' , "%$request->search_key%")
         ->get();
+        $academies['academiesByName'] = $academiesByName;
+        $academies['academiesByLocation'] = $academiesByLocation;
         return response()->json([
             'status'=>200,
             'message'=>'done successfully',
-            'academiesByName' => $academiesByName,
-            'academiesByLocation'=>$academiesByLocation,
+            'data' => $academies
         ]);
     }
 }
