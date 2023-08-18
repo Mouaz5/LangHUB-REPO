@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Academy;
 use App\Models\Course;
 use Illuminate\Http\Request;
-use App\Models\Teacher;
-use App\Models\TeacherPost;
 
 class HomeTeacherController extends Controller
 {
@@ -32,21 +30,18 @@ class HomeTeacherController extends Controller
         return $academies;
     }
     public function academySearch(Request $request){
-        $key = $request->validate([
+        $request->validate([
             'search_key' => 'required'
         ]);
         $academiesByName = Academy::where('name' , 'like' , "%$request->search_key%")
         ->get();
         $academiesByLocation = Academy::where('location' , 'like' , "%$request->search_key%")
         ->get();
-        $academiesByLang = Academy::where( $request->search_key ,true)
-        ->get();
-        $responce = response()->json([
+        return response()->json([
             'status'=>200,
             'message'=>'done successfully',
             'academiesByName' => $academiesByName,
             'academiesByLocation'=>$academiesByLocation,
-            'academiesByLang'=>$academiesByLang
         ]);
     }
 }

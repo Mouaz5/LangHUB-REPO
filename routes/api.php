@@ -129,12 +129,11 @@ Route::group(['prefix' => 'teacher', 'middleware' => ['auth:sanctum','teacher']]
         Route::get('/{course}/show-lessons', [InstituesTeacherController::class, 'showLessons']);
         Route::delete('{lesson}/delete-lesson', [InstituesTeacherController::class, 'destroy']);
     });
-
     Route::group(['prefix' => 'institutes'], function() {
         Route::get('/', [InstituesTeacherController::class, 'index']);
         Route::get('/{academy}', [InstituesTeacherController::class, 'show']);
         Route::post('{id}/add-request', [InstituesTeacherController::class, 'store']);
-        //Route::get('/pending-requests', [InstituesTeacherController::class, 'pendingRequests']);
+        Route::post('search', [HomeTeacherController::class, 'academySearch']);
         Route::delete('{order}/cancel-request', [InstituesTeacherController::class, 'cancelRequest']);
         Route::get('students/{course}', [InstituesTeacherController::class, 'showStudents']);
         Route::get('courses-history', [InstituesTeacherController::class, 'coursesHistory']);
