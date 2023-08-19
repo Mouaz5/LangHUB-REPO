@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Teacher;
 
-use App\Http\Controllers\Controller;
-use App\Models\Academy;
 use App\Models\Course;
+use App\Models\Academy;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class HomeTeacherController extends Controller
 {
@@ -29,7 +29,7 @@ class HomeTeacherController extends Controller
         $academies = Course::with('rate');
         return $academies;
     }
-    public function academySearch(Request $request){
+    public function academySearching(Request $request) {
         $request->validate([
             'search_key' => 'required'
         ]);
@@ -37,12 +37,16 @@ class HomeTeacherController extends Controller
         ->get();
         $academiesByLocation = Academy::where('location' , 'like' , "%$request->search_key%")
         ->get();
-        $academies['academiesByName'] = $academiesByName;
-        $academies['academiesByLocation'] = $academiesByLocation;
+        $newArray = $academiesByName->map(function ($item) {
+            return $item;
+        });
+        $newArray = $academiesByLocation->map(function ($item){
+            return $item;
+        });
         return response()->json([
-            'status'=>200,
-            'message'=>'done successfully',
-            'data' => $academies
+            'status' => 200,
+            'message' => 'done succefully',
+            'search teacher' => $newArray
         ]);
     }
 }

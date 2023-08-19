@@ -161,4 +161,23 @@ class InstituesTeacherController extends Controller
             'message' => 'lesson delete it successful',
         ]);
     }
+    public function academySearching(Request $request){
+        $request->validate([
+            'search_key' => 'required'
+        ]);
+        $academiesByName = Academy::where('name' , 'like' , "%$request->search_key%")
+        ->get();
+        $academiesByLocation = Academy::where('location' , 'like' , "%$request->search_key%")
+        ->get();
+        $myArray = array();
+        array_push($myArray, $academiesByName);
+        $academies = $academiesByName;
+        $academies[] = $academiesByName;
+        $academies[] = $academiesByLocation;
+        return response()->json([
+            'status'=>200,
+            'message'=>'done successfully',
+            'data' => $academies
+        ]);
+    }
 }
