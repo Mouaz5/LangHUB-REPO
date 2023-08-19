@@ -21,12 +21,12 @@ class ProfileTeacherController extends Controller
 
     //change Teacher Password
 	public function changePassword(Request $request) {
-		$teacher = Teacher::where('user_id', auth()->id())->first();
+		$teacher = User::where('id', auth()->id())->first();
 	    $validatedData = $request->validate([
 	        'current_password' => 'required|string',
 	        'new_password' => 'required|string|min:8',
 	    ]);
-
+		
 	    if (!Hash::check($validatedData['current_password'], $teacher->password)) {
 	        return response()->json([
 	        	'current_password' => 'The current password is incorrect'
@@ -58,14 +58,23 @@ class ProfileTeacherController extends Controller
     //Update a student's profile
 	public function update(Request $request) {
 	    $validatedData = $request->validate([
-	        'name' => 'required|string|max:255',
-	        'email' => 'required|string|email|max:255|unique:students,email,'
-	        // other fields to validate
+	        'first_name' => 'required|string',
+            'last_name' => 'required|string|unique:users,email',
+            'phone_number' => 'required',
+            'email' => 'required|string|unique:users,email',
+            'password' => 'required|min:5'
 	    ]);
+		$imageUrl = '';
+		if ($request->hasFile('image')) {
+			$imageUrl = $this->uploadImage($request);
+		}
+		
+		$validatedData['photo'] = $imageUrl;
         $teacher = Teacher::where('user_id', auth()->id())->first();
     	$teacher->update($validatedData);
 
     	return response()->json([
+			'status' => 200,
     		'success' => 'Profile updated successfully',
     		'teacher info' => $teacher
     	], 200);
