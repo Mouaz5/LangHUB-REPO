@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Student\RateController;
 use Illuminate\Http\Request;
 use App\Models\Teacher;
 use App\Models\TeacherPost;
@@ -13,10 +12,10 @@ use Illuminate\Support\Facades\Hash;
 class ProfileTeacherController extends Controller
 {
     protected function uploadImage($request) {
-		$courseImage = $request->file('image');
-		$imageName = time().$courseImage->getClientOriginalName();
-		$courseImage->move(public_path('course-images'), $courseImage);
-		$imageUrl = asset("teacher/post-images", $imageName);
+		$postImage = $request->file('image');
+		$imageName = time().$postImage->getClientOriginalName();
+		$postImage->move(public_path('teacher-posts'), $imageName);
+		$imageUrl = asset('teacher-posts/'.$imageName);
 		return $imageUrl;
 	}
 

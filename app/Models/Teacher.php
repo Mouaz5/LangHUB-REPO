@@ -14,7 +14,7 @@ class Teacher extends Model
     use HasFactory;
     protected $table = 'teachers';
     protected $fillable = [
-        'first_name', 'last_name', 'phone_number', 'user_id'
+        'first_name', 'last_name', 'phone_number', 'photo', 'user_id'
     ];
     public function user() {
         return $this->belongsTo(User::class);
