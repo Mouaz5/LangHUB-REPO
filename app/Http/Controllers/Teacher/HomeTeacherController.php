@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\Academy;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Student\RateController;
 
 class HomeTeacherController extends Controller
 {
@@ -37,16 +38,15 @@ class HomeTeacherController extends Controller
         ->get();
         $academiesByLocation = Academy::where('location' , 'like' , "%$request->search_key%")
         ->get();
-        $newArray = $academiesByName->map(function ($item) {
-            return $item;
-        });
-        $newArray = $academiesByLocation->map(function ($item){
+        $mergedAcademies = $academiesByName->merge($academiesByLocation);
+        $mergedAcademies = $mergedAcademies->map(function ($item) {
+            $item['rate'] = RateController::getAcademyRate($item);
             return $item;
         });
         return response()->json([
             'status' => 200,
             'message' => 'done succefully',
-            'search teacher' => $newArray
+            'search teacher' => $mergedAcademies
         ]);
     }
 }
