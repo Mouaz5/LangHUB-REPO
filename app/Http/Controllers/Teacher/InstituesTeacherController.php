@@ -74,7 +74,11 @@ class InstituesTeacherController extends Controller
         ]);
     }
 
-    public function cancelRequest(AcademyTeacher $order) {
+    public function cancelRequest($order) {
+        $t_id = $t_id = Teacher::where('user_id', auth()->id())->first()['id'];
+        $order = AcademyTeacher::where('academy_id', '=', $order)
+        ->where('teacher_id', $t_id)
+        ->first();
         $order->delete();
         return response()->json([
             'status' => 200,
