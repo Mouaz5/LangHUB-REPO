@@ -8,6 +8,7 @@ use App\Models\Course;
 use App\Models\CourseStudent;
 use App\Models\Mark;
 use App\Models\Teacher;
+use App\Models\User;
 
 class CourseTeacherController extends Controller
 {
@@ -114,5 +115,21 @@ class CourseTeacherController extends Controller
 			'status' => 200,
 			'message' => 'marks added successfully',
 		]);
+	}
+	public function studentMarks(Course $course) {
+		$studentEmail = User::where('id', auth()->id())->first()['email'];
+		$students = $course->students()->get();
+		$students = $students->map(function($item) use ($studentEmail) {
+			$item['email'] = $studentEmail;
+			return collect($item)->only([
+				'id','first_name', 'last_name', 'phone_number', 'email'
+			]);
+		});
+
+	    return response()->json([
+			'status' => 200,
+			'message' => 'Students in this course',
+	    	'students' => $students
+	    ]);
 	}
 }

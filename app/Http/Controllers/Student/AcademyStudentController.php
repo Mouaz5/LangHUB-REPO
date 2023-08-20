@@ -73,7 +73,9 @@ class AcademyStudentController extends Controller
 	}
 	public function showRequest(){
 		$student_id = Student::where('user_id' , auth()->id())->first()['id'];
-		$requests = AcademyStudent::where('student_id' , $student_id)->get();
+		$requests = AcademyStudent::where('student_id' , $student_id)
+		->where('approved' , 0)
+		->get();
 		$i = 0 ;
 		foreach($requests as $request){
 			
@@ -93,7 +95,7 @@ class AcademyStudentController extends Controller
 	}
 	public function delete(Academy $academy){
 		$student = Student::where('user_id' , auth()->id())->first();
-		$student->academies()->detach($academy) ;
+		$student->academies()->detach($academy->id);
 		return response()->json([
 			'status' => 200 ,
 			'message' => 'deleted seccussfuly'
@@ -136,12 +138,18 @@ class AcademyStudentController extends Controller
         $academiesByLocation = Academy::where('location' , 'like' , "%$request->search_key%")
         ->get();
 		
-		if ($request->search_key == 'english' ||
-		$request->search_key == 'french' ||
-		$request->search_key == 'spanish' ||
-		$request->search_key == 'germany' ) 
-        $academiesByLang = Academy::where( $request->search_key, true)
-        ->get();
+		if ($request->search_key == 'english' )
+			$academiesByLang = Academy::where('english', true)
+			->get();
+		else if ($request->search_key == 'french' )
+			$academiesByLang = Academy::where('french', true)
+			->get();
+		else if($request->search_key == 'spanish')
+			$academiesByLang = Academy::where('spanish', true)
+			->get();
+		else if ($request->search_key == 'germany')
+			$academiesByLang = Academy::where('germany', true)
+			->get();
 		else $academiesByLang = Academy::find(1)->get() ;
 		
 		$data = $academiesByName->merge($academiesByLocation);
@@ -166,12 +174,17 @@ class AcademyStudentController extends Controller
 				$finalCountRate++;
 			}
 			if ($finalCountRate == 0)
-			$academy['rate'] = 0 ;
+				$academy['rate'] = 0 ;
 			else 
-			$academy['rate'] = $finalRate / $finalCountRate;
+				$academy['rate'] = $finalRate / $finalCountRate;
+			
 			$student_id = Student::where('user_id' , auth()->id())->first()['id'];
-			$academy['my_rate']= AcademyStudent::where('academy_id' , $academy->id)
-			->where('student_id' , $student_id)->first()['rate'] ;
+			
+			$ratee= AcademyStudent::where('academy_id' , $academy->id)
+			->where('student_id' , $student_id)->first() ;
+			if ($ratee == null){
+				$academy['my_rate'] = 0;
+			}else $academy['my_rate'] = $ratee->rate;
 			return response()->json([
 				'status' => 200 ,
 				'message' => 'done',

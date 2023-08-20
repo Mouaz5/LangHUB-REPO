@@ -76,8 +76,8 @@ class RequestMangeController extends Controller
         $admin = $academy1->admin()->first();
         // return $academy ;
         // return $admin ;
-        $user = $admin->user()->first() ;
-       
+        $admin->delete();
+        
         return response()->json([
             'status' => 200 ,
             'message' => 'deleted successfully',

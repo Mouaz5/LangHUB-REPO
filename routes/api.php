@@ -29,6 +29,8 @@ use App\Http\Controllers\Student\RateController;
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SuperAdmin\RequestMangeController;
+use App\Models\AcademyStudent;
+use App\Models\OfferStudent;
 
 /*
 |--------------------------------------------------------------------------
@@ -124,10 +126,12 @@ Route::group(['prefix' => 'teacher', 'middleware' => ['auth:sanctum','teacher']]
     });
     Route::get('pending-requests', [InstituesTeacherController::class, 'pendingRequests']);
     Route::post('search', [HomeTeacherController::class, 'academySearching']);
+
     Route::group(['prefix' => 'courses'], function() {
         Route::get('/', [CourseTeacherController::class, 'index']);
         Route::get('/{course}', [CourseTeacherController::class, 'show']);
         Route::get('/{course}/students', [CourseTeacherController::class, 'courseStudents']);
+        Route::get('/{course}/students-marks', [CourseTeacherController::class, 'studentMarks']);
         Route::post('{course}/add-marks', [CourseTeacherController::class,'addMarks']);
         Route::post('/{course}/add-lesson', [InstituesTeacherController::class, 'addLesson']);
         Route::get('/{course}/show-lessons', [InstituesTeacherController::class, 'showLessons']);
@@ -168,10 +172,11 @@ Route::group(['prefix' => 'student', 'middleware' => ['auth:sanctum','student']]
         Route::post('join/{academy}' , [AcademyStudentController::class ,'joinToAcademy' ]) ;
         Route::get('show/{academy}' , [AcademyStudentController::class , 'academy']);
         Route::get('show-request' , [AcademyStudentController::class , 'showRequest'] ) ;
-        Route::get('cancel-request/{academyStudent}', [AcademyStudentController::class , 'delete']) ;
+        Route::get('cancel-request/{academy}', [AcademyStudentController::class , 'delete']) ;
         Route::post('feedback/{academy}' , [AcademyStudentController::class , 'addFeedBack']) ;
         Route::post('rate-academy/{academy}' , [AcademyStudentController::class ,'rateAcademy' ]) ;
         Route::post('rate-teacher/{teacher}' , [AcademyStudentController::class ,'rateTeacher' ]) ;
+        Route::post('search' ,[AcademyStudentController::class , 'academySearch']);
     });//done
     Route::group(['prefix' => 'rate'] , function (){
         Route::post('/teacher/{teacher}' ,[RateController::class ,'rateTeacher' ] );
@@ -192,6 +197,7 @@ Route::group(['prefix' => 'student', 'middleware' => ['auth:sanctum','student']]
         Route::get('/enroll/{offer}' , [OfferStudentController::class , 'enrollToOffer']);
         Route::delete('delete-request/{offer}' ,[OfferStudentController::class,'delete']);
         Route::get('ten' , [OfferStudentController::class , 'tenOffers']);
+        Route::get('search' , [OfferStudentController::class , 'search']);
     });
 
 

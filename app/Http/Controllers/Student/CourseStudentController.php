@@ -55,7 +55,7 @@ class CourseStudentController extends Controller
 		$courses = $student->courses()
 			->with('teacher:id,first_name,last_name')
 			->with('academy:id,name')
-			->with('annualSchedules')
+			->with('annualSchedule')
 			->get();
 		foreach($courses as $course){
 			$course['is_offer'] = false ;

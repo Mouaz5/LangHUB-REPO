@@ -32,6 +32,6 @@ class Offer extends Model
         return $this->belongsTo(Teacher::class);
     }
     public function annualSchedules(){
-        return $this->hasMany(OfferAnnualScadual::class);
+        return $this->hasMany(OfferAnnualScadual2::class);
     }
 }

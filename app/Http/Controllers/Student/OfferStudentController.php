@@ -9,6 +9,7 @@ use App\Models\OfferStudent;
 use App\Models\Student;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\HttpCache\ResponseCacheStrategy;
 
 class OfferStudentController extends Controller
 {
@@ -94,5 +95,22 @@ class OfferStudentController extends Controller
         ]) ;
        }
 
+
+    }
+    public function search (Request $request){
+        $request->validate([
+            'search_key' => 'required|string'
+        ]);
+
+
+        $offers = Offer::where('name' ,'like' , "%$request->search_key%")->get();
+        foreach($offers as $offer){
+            $offer->load('academy');
+        }
+        return response()->json([
+            'status' => 200,
+            'message' => 'done successfully',
+            'data' => $offers
+        ]);
     }
 }
