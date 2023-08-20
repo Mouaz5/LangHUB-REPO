@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Teacher;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Course;
+use App\Models\CourseStudent;
 use App\Models\Mark;
 use App\Models\Teacher;
 
@@ -89,24 +90,29 @@ class CourseTeacherController extends Controller
 	public function addMarks(Request $request, Course $course) {
 		$data = $request->all();
 		$myArray = array($data);
-
+		
 		foreach ($myArray as $value) {
 			foreach($value as $subKey => $subValue) {
-				if ($subValue >= 0 && $subValue <= 100) {
-					$mark = new Mark();
-					$mark->value = $subValue;
-					$mark->student_id = $subKey;
-					$mark->course_id = $course->id;
-					$mark->save();
-				}else {
-					echo ("You can't enter this value");
+				if ($subValue < 0 || $subValue > 100) {
+					return response()->json([
+						'status' => 205,
+						'message' => 'The marks isnt correct, there is a mark below (0) or above (100). check it and re-enter it'
+					]);
 				}
+			}
+		}
+		foreach ($myArray as $value) {
+			foreach($value as $subKey => $subValue) {
+				$mark = new Mark();
+				$mark->marks = $subValue;
+				$mark->student_id = $subKey;
+				$mark->course_id = $course->id;
+				$mark->save();
 			}
 		}
 		return response()->json([
 			'status' => 200,
 			'message' => 'marks added successfully',
-			'data' => [],
 		]);
 	}
 }

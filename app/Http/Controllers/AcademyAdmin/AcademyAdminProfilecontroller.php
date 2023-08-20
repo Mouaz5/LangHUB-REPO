@@ -114,4 +114,5 @@ class AcademyAdminProfilecontroller extends Controller
 			return response()->json(["message"=>"waiting"])  ;
 		else return response()->json(["message"=>"approved"]);
 	}
+	
 }

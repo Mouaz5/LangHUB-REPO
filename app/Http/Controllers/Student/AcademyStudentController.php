@@ -58,7 +58,12 @@ class AcademyStudentController extends Controller
 					'message'=>'you are already add join request to this academy'
 				]) ;
 		}
-		$student->academies()->attach($academy) ;
+		$d = new AcademyStudent() ;
+		$d->student_id = $student->id ;
+		$d->academy_id = $academy->id;
+		$d->language = $request->language;
+		$d->save();
+		
 		$response = response()->json([
 			'status'=> 200 ,
 			'message'=>'done successfully',

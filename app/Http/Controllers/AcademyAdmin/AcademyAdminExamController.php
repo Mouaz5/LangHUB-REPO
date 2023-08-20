@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Academy;
 use App\Models\AcademyAdminstrator;
 use App\Models\Course;
+use App\Models\Question;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 
@@ -20,7 +21,7 @@ class AcademyAdminExamController extends Controller
             'message' => 'this course is not yours ',
         ]);
         $exam = $course->exams()->first();
-        $exam->load('questions') ;
+        $exam->load('questions');
         return response()->json([
             'status' => 200 ,
             'message' => 'done' ,

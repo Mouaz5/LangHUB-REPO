@@ -20,7 +20,7 @@ class RequestMangeController extends Controller
             'name' => $academyPending->name ,
             'description' => $academyPending->description,
             'location' => $academyPending->location,
-            'photo' => $academyPending->photo,
+            'image' => $academyPending->photo,
             'english' => $academyPending->english,
             'french'=>$academyPending->french,
             'spanish' => $academyPending->spanish,
@@ -42,7 +42,6 @@ class RequestMangeController extends Controller
         AcademyPending::where('id' , $academyPending->id)->delete() ;
     
         
-        User::where('id' , $admin->user_id)->delete();
         $admin->delete(); 
         return response()->json([
             'message'=> 'rejected successfully',
@@ -79,7 +78,6 @@ class RequestMangeController extends Controller
         // return $admin ;
         $user = $admin->user()->first() ;
        
-        $user->delete();
         return response()->json([
             'status' => 200 ,
             'message' => 'deleted successfully',

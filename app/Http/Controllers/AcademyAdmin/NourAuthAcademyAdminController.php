@@ -182,7 +182,7 @@ class NourAuthAcademyAdminController extends Controller
            $teachers= [] ;
            foreach($academyTeachers as $teacher){
             $teachers[] = Teacher::where('id' , $teacher->teacher_id)->get();
-           
+            hasAcademy
             }
 
 

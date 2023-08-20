@@ -64,6 +64,7 @@ Route::group(['prefix' => 'super-admin', 'middleware' => ['auth:sanctum','superA
 
 Route::group(['prefix' => 'academy-admin', 'middleware' => ['auth:sanctum','academyAdmin']], function () {
     Route::get('/', [HomeTeacherController::class, 'index']);
+    Route::get('test' , [AcademyAdminStudentController::class , 'hasAcademy']);
     Route::group(['prefix' => 'profile'], function() {
         Route::post('update-requestTime' ,[AcademyAdminProfileController::class , 'uodateRequestTime']);
         Route::get('/feedback' ,[AcademyAdminProfilecontroller::class , 'feedBack']);
@@ -83,6 +84,7 @@ Route::group(['prefix' => 'academy-admin', 'middleware' => ['auth:sanctum','acad
         Route::get('/inactive' , [AcademyAdminCourseController::class,'inactiveCourses'] );
         Route::get('/active' , [AcademyAdminCourseController::class,'activeCourses'] );
         Route::get('/addStudentToCourse/{course}/{student}' ,[AcademyAdminStudentController::class , 'addStudentToCourse']);
+        Route::delete('removeStudentFromCourse/{course}/{student}' , [AcademyAdminStudentController::class , 'removeStudentFromCourse']);
     });
     Route::group(['prefix' => 'teachers'], function() {
         Route::get('/' , [AcademyAdminTeacherController::class,'index'] );
@@ -101,6 +103,7 @@ Route::group(['prefix' => 'academy-admin', 'middleware' => ['auth:sanctum','acad
     Route::group(['prefix' => 'offers'], function() {
         Route::get('/' , [AcademyAdminOfferController::class , 'index']);
         Route::post('/add' , [AcademyAdminOfferController::class , 'addOffer']);
+        Route::delete('/deleteOffer/{offer}' , [AcademyAdminOfferController::class , 'deleteOffer']);
     });
     Route::group(['prefix' => 'exams'], function() {
         Route::post('/addExam/{course}' , [AcademyAdminExamController::class , 'addExam']);
@@ -219,4 +222,3 @@ Route::get('academy/{academy}' , [GeneralController::class , 'academy']);
 Route::get('teacher/{teacher}' , [GeneralController::class , 'teacher']);
 Route::post('academySearch' , [GeneralController::class , 'academySearch']);
 Route::get('search-academies', [AcademyStudentController::class, 'academySearch']);
-Route::post('mouaz', [HomeController::class, 'test']);

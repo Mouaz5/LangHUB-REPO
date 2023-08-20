@@ -43,14 +43,14 @@ class AuthAcademyController extends Controller
             'photo' => 'required|image'
         ]);
         
-        
+
         $user = User::query()->create([
             'role_id' => 2,
             'email' => $credentials['email'],
             'password' => Hash::make($credentials['password']),
             'email_verified_at' => now()
         ]);
-         $admin = $user->academyAdmin()->create($request->all());
+        $admin = $user->academyAdmin()->create($credentials);
         $en = false;
         $fr = false; 
         $sp = false;
@@ -86,7 +86,7 @@ class AuthAcademyController extends Controller
         $user['token_type'] = 'Bearer';
         $response = response()->json([
             'status'=>true,
-            'massage' => 'registeration donr seccesfully',
+            'massage' => 'registeration done seccesfully',
             'data' => $admin,
             'token' => $token,
         ]);

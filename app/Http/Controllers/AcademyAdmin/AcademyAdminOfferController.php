@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\AcademyAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Academy;
 use App\Models\AcademyAdminstrator;
+use App\Models\Offer;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Action;
 use PDO;
 
 use function PHPSTORM_META\map;
@@ -79,6 +82,22 @@ class AcademyAdminOfferController extends Controller
             'status' => 200 ,
             'message' => 'done successfully',
             'data' => $data
+        ]);
+    }
+    public function deleteOffer(Offer $offer){
+        $admin =  AcademyAdminstrator::where('user_id' ,auth()->id())->first();
+        $academy = $admin->academy()->first();
+        if ($academy->id != $offer->academy_id){
+            return response()->json([
+                'status' => 201 ,
+                'message' => 'you can not delet this offer , is not yours'
+            ]);
+        }
+        $offer->delete();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'deleted successfully'
         ]);
     }
 }

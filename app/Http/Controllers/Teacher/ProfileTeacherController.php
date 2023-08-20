@@ -29,6 +29,7 @@ class ProfileTeacherController extends Controller
 		
 	    if (!Hash::check($validatedData['current_password'], $teacher->password)) {
 	        return response()->json([
+				'status' => 205,
 	        	'current_password' => 'The current password is incorrect'
 	        ]);
 	    }
@@ -58,11 +59,11 @@ class ProfileTeacherController extends Controller
     //Update a student's profile
 	public function update(Request $request) {
 	    $validatedData = $request->validate([
-	        'first_name' => 'required|string',
-            'last_name' => 'required|string|unique:users,email',
-            'phone_number' => 'required',
-            'email' => 'required|string|unique:users,email',
-            'password' => 'required|min:5'
+	        'first_name' => 'nullable|string',
+            'last_name' => 'nullable|string|unique:users,email',
+            'phone_number' => 'nullable',
+            'email' => 'nullable|string|unique:users,email',
+            'password' => 'nullable|min:5'
 	    ]);
 		$imageUrl = '';
 		if ($request->hasFile('image')) {

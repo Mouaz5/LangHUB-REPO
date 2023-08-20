@@ -29,6 +29,7 @@ class AcademyAdminCourseController extends Controller
 			'language' => 'required|string'
 			// other fields to validate
 	    ]);
+		
 		$imageUrl = '';
 		if ($request->hasFile('course_image')) {
 			$imageUrl = $this->uploadImage($request);
@@ -36,6 +37,26 @@ class AcademyAdminCourseController extends Controller
 		
 		$admin = AcademyAdminstrator::where('user_id' , auth()->id())->first();
 		$academy = $admin->academy()->first();
+		if ($request->language == 'english'&&$academy->english == false)
+		return response()->json([
+			'status' => 201 ,
+			'message' => 'your academy dont have a english',
+		]);
+		if ($request->language == 'french'&&$academy->french == false)
+		return response()->json([
+			'status' => 201 ,
+			'message' => 'your academy dont have a french',
+		]);
+		if ($request->language == 'spanish'&&$academy->spanish == false)
+		return response()->json([
+			'status' => 201 ,
+			'message' => 'your academy dont have a spanish',
+		]);
+		if ($request->language == 'germany'&&$academy->germany == false)
+		return response()->json([
+			'status' => 201 ,
+			'message' => 'your academy dont have a germany',
+		]);
 		$course = $academy->courses()->create($validatedData + [
 			'course_image' => $imageUrl,
 		]);
@@ -155,6 +176,7 @@ class AcademyAdminCourseController extends Controller
 		]);
         $admin = AcademyAdminstrator::where('user_id' , auth()->id())->first();
         $academy = $admin->academy()->first();
+		return $academy->id ;
 		// return $academy ;
         $courses = $academy->courses()->where('active' , true)
 		->where('language' , $request->language)
@@ -199,6 +221,14 @@ class AcademyAdminCourseController extends Controller
 			if($this->checkTime( $course,$courseTime , $teacher)){
 				$data [] = $teacher ;
 			}
+		}
+		if (count($data) == 0 ){
+			$data = $teacher ;
+			return response()->json([
+				'status' => 200 ,
+				'message' => 'there is no teachers have common scuduales so this is list of all teachers',
+				'data' => $data 
+			])	;
 		}
 		return response()->json([
 			'status' => 200 ,
@@ -293,9 +323,9 @@ class AcademyAdminCourseController extends Controller
 		]);
 	}
 	public function deleteCourse(Course $course){
-		$admin = AcademyAdminstrator::where('id' , auth()->id())->first();
+		$admin = AcademyAdminstrator::where('user_id' , auth()->id())->first();
 		$academy = $admin-> academy()->first() ;
-		// return $admin ;
+		// return $academy ;
 		if ($course->academy_id != $academy->id){
 			return response()->json([
 				'message' => 'you can not deleted this course ' ,
