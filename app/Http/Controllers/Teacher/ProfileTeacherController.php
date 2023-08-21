@@ -30,7 +30,7 @@ class ProfileTeacherController extends Controller
 	    if (!Hash::check($validatedData['current_password'], $teacher->password)) {
 	        return response()->json([
 				'status' => 205,
-	        	'current_password' => 'The current password is incorrect'
+	        	'message' => 'The current password is incorrect'
 	        ]);
 	    }
 	    $teacher->update(['password' => Hash::make($validatedData['new_password'])]);

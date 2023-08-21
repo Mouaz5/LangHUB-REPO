@@ -95,7 +95,7 @@ class CourseStudentController extends Controller
 			'status' => 400 ,
 			'message' => 'you did not enrolled in this course'
 		]);
-		$exam = $course->exams()->first();
+		$exam = $course->exam()->first();
 		$questions = $exam->questions()->get();
 		
 		$quesionMark = 100 / sizeof($questions);		
@@ -128,8 +128,11 @@ class CourseStudentController extends Controller
 	}
 	public function getQuestions(Course $course) {
 		if ($course->hasExam == 1) {
-			$questions = $course->with('exam.questions')
-			->first();
+			$exam = $course->exam()->first();
+			$questions = $exam->questions()->get();
+			$questions = $questions->map(function ($item){
+				return collect($item)->except('created_at', 'updated_at');
+			});
 			return response()->json([
 				'status' => 200,
 				'message' => 'done succefully',

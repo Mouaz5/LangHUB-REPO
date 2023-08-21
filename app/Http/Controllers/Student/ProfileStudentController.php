@@ -20,12 +20,14 @@ class ProfileStudentController extends Controller
 	    ]);
 	    if (!Hash::check($validatedData['current_password'], $student->password)) {
 	        return response()->json([
-	        	'current_password' => 'The current password is incorrect',
+				'status' => 205,
+	        	'message' => 'The current password is incorrect',
 	        ]);
 	    }
 	    $student->update(['password' => Hash::make($validatedData['new_password'])]);
 	    return response()->json([
-	    	'success' => 'Password changed successfully'
+			'status' => 200,
+	    	'message' => 'Password changed successfully'
 	    ]);
 	}
     //Show a student's profile
