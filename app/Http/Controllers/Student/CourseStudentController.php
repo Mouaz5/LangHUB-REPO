@@ -6,16 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Certificate;
 use Illuminate\Http\Request;
 use App\Models\Course;
-use App\Models\CourseStudent;
-use App\Models\Exam;
-use App\Models\Offer;
-use App\Models\Question;
 use App\Models\Student;
-use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
-use PhpParser\ErrorHandler\Collecting;
-use Symfony\Component\VarDumper\Dumper\ContextProvider\SourceContextProvider;
 
 class CourseStudentController extends Controller
 {
@@ -53,7 +45,7 @@ class CourseStudentController extends Controller
 	{
 		$student = Student::where('user_id', auth()->id())->first();
 		$courses = $student->courses()
-			->with('teacher:id,first_name,last_name')
+			->with('teacher')
 			->with('academy:id,name')
 			->with('annualSchedule')
 			->get();
@@ -62,7 +54,7 @@ class CourseStudentController extends Controller
 		}
 		$offers = $student->offers()
 		->wherePivot('approved' , 1)
-		->with('teacher:id,first_name,last_name')
+		->with('teacher')
 		->with('academy:id,name')
 		->with('annualSchedules')
 		->get();
@@ -134,5 +126,20 @@ class CourseStudentController extends Controller
 			'message' => $message 
 		]);
 	}
-
+	public function getQuestions(Course $course) {
+		if ($course->hasExam == 1) {
+			$questions = $course->with('exam.questions')
+			->first();
+			return response()->json([
+				'status' => 200,
+				'message' => 'done succefully',
+				'data' => $questions
+			]);
+		}else {
+			return response()->json([
+				'status' => 205,
+				'message' => 'the Exam not activated yet'
+			]);
+		}
+	}
 }

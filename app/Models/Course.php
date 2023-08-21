@@ -43,8 +43,8 @@ class Course extends Model
     public function academy() {
         return $this->belongsTo(Academy::class);
     }
-    public function exams() {
-        return $this->hasMany(Exam::class);
+    public function exam() {
+        return $this->hasOne(Exam::class);
     }
     public function rate(){
         return $this->belongsTo(Rate::class);

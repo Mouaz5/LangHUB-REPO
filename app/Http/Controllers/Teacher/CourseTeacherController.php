@@ -132,4 +132,18 @@ class CourseTeacherController extends Controller
 	    	'students' => $students
 	    ]);
 	}
+	public function activateCourseExam(Course $course) {
+		if ($course->hasExam == 1) {
+			return response()->json([
+				'status' => 200,
+				'message' => 'the exam for this course is already activated..'
+			]);
+		}
+		$course->hasExam = 1;
+		$course->save();
+		return response()->json([
+			'status' => 200,
+			'message' => 'Exam has been activated succfully..'
+		]);
+	}
 }

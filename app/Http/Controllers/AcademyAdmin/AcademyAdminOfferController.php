@@ -3,14 +3,9 @@
 namespace App\Http\Controllers\AcademyAdmin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Academy;
 use App\Models\AcademyAdminstrator;
 use App\Models\Offer;
 use Illuminate\Http\Request;
-use Illuminate\Notifications\Action;
-use PDO;
-
-use function PHPSTORM_META\map;
 
 class AcademyAdminOfferController extends Controller
 {
@@ -25,9 +20,12 @@ class AcademyAdminOfferController extends Controller
         $admin = AcademyAdminstrator::where('user_id' , auth()->id())->first();
         $academy = $admin->academy()->first();
         $offers = $academy->offers()->get();
-        foreach($offers as $offer){
-            $offer->load('annualSchedules');
-        }
+        // foreach($offers as $offer){
+        //     $offer->load('annualSchedules');
+        // }
+        $offers = $offers->map(function ($offer){
+            return $offer->load('annualSchedules');
+        });
         return response()->json([
             'status' => 200 ,
             'message' => 'done successfully',

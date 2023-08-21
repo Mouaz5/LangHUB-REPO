@@ -136,6 +136,7 @@ Route::group(['prefix' => 'teacher', 'middleware' => ['auth:sanctum','teacher']]
         Route::post('/{course}/add-lesson', [InstituesTeacherController::class, 'addLesson']);
         Route::get('/{course}/show-lessons', [InstituesTeacherController::class, 'showLessons']);
         Route::delete('{lesson}/delete-lesson', [InstituesTeacherController::class, 'destroy']);
+        Route::post('{course}/active-exam', [CourseTeacherController::class, 'activateCourseExam']);
     });
     Route::group(['prefix' => 'institutes'], function() {
         Route::get('/', [InstituesTeacherController::class, 'index']);
@@ -156,7 +157,7 @@ Route::group(['prefix' => 'student', 'middleware' => ['auth:sanctum','student']]
     });//done
 
     Route::group(['prefix' => 'courses'], function() {
-        
+        Route::get('{course}/questions', [CourseStudentController::class, 'getQuestions']);
         Route::get('/enrolled-courses', [CourseStudentController::class, 'enrolledCourses']);
         Route::get('certificate' , [ProfileStudentController::class , 'certificats']);
         Route::post('solve-exam/{course}' , [CourseStudentController::class , 'solveExam']);
@@ -196,7 +197,7 @@ Route::group(['prefix' => 'student', 'middleware' => ['auth:sanctum','student']]
         Route::get('/requests' , [OfferStudentController::class , 'showOfferRequests']);
         Route::get('/enroll/{offer}' , [OfferStudentController::class , 'enrollToOffer']);
         Route::delete('delete-request/{offer}' ,[OfferStudentController::class,'delete']);
-        Route::get('ten' , [OfferStudentController::class , 'tenOffers']);
+        Route::post('ten' , [OfferStudentController::class , 'tenOffers']);
         Route::post('search' , [OfferStudentController::class , 'search']);
     });
 
