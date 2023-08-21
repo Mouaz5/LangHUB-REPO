@@ -176,8 +176,6 @@ class AcademyAdminCourseController extends Controller
 		]);
         $admin = AcademyAdminstrator::where('user_id' , auth()->id())->first();
         $academy = $admin->academy()->first();
-		return $academy->id ;
-		// return $academy ;
         $courses = $academy->courses()->where('active' , true)
 		->where('language' , $request->language)
 		->get();

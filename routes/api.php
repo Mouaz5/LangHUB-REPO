@@ -197,7 +197,7 @@ Route::group(['prefix' => 'student', 'middleware' => ['auth:sanctum','student']]
         Route::get('/enroll/{offer}' , [OfferStudentController::class , 'enrollToOffer']);
         Route::delete('delete-request/{offer}' ,[OfferStudentController::class,'delete']);
         Route::get('ten' , [OfferStudentController::class , 'tenOffers']);
-        Route::get('search' , [OfferStudentController::class , 'search']);
+        Route::post('search' , [OfferStudentController::class , 'search']);
     });
 
 
