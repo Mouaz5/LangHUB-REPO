@@ -200,7 +200,7 @@ Route::group(['prefix' => 'student', 'middleware' => ['auth:sanctum','student']]
         Route::get('/requests' , [OfferStudentController::class , 'showOfferRequests']);
         Route::post('/enroll/{offer}' , [OfferStudentController::class , 'enrollToOffer']);
         Route::delete('delete-request/{offer}' ,[OfferStudentController::class,'delete']);
-        Route::post('ten' , [OfferStudentController::class , 'tenOffers']);
+        Route::get('ten' , [OfferStudentController::class , 'tenOffers']);
         Route::post('search' , [OfferStudentController::class , 'search']);
     });
 

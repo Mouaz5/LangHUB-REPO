@@ -154,11 +154,14 @@ class AcademyStudentController extends Controller
 		
 		$data = $academiesByName->merge($academiesByLocation);
 		$finalData = $data->merge($academiesByLang) ;
-		
+		$finalData2 = $finalData->map(function ($item) {
+			$item['rate'] = RateController::getAcademyRate($item);
+			return $item;
+		});
         $response = response()->json([
             'status'=>200,
             'message'=>'done successfully',
-            'data' => $finalData
+            'data' => $finalData2
         ]);
 		return $response ;
     }

@@ -68,8 +68,15 @@ class OfferStudentController extends Controller
     public function tenOffers(){
         $student = Student::where('user_id' , auth() -> id())->first() ;
         $academies =  $student->academies()->wherePivot('approved' ,true)->get();
-        $offers = $academies[0]->offers()->get() ;
-        $count =  count($academies) ;
+        $count =  count($academies);
+        if ($count == 0) {
+            return response()->json([
+                'status' => 205,
+                'message' => 'there is no joining to this academy for you..',
+                'data' => []
+            ]);
+        }
+        $offers = $academies[0]->offers()->get();
         $i = 1;
         while($i <$count ){
             $offers = $offers->merge( $academies[$i]->offers()->get() ) ;
@@ -97,8 +104,6 @@ class OfferStudentController extends Controller
             'data' => $offers
         ]) ;
        }
-
-
     }
     public function search (Request $request){
         $request->validate([

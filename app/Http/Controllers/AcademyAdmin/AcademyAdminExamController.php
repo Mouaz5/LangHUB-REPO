@@ -39,7 +39,7 @@ class AcademyAdminExamController extends Controller
                 'message' => 'this course alrady has an exam'
             ]);
         }
-        $exam = $course->exams()->create();
+        $exam = $course->exam()->create();
         $course->hasExam = true ;
         $course->save();
         for ($i=0 ; ;$i++){
