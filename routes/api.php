@@ -148,6 +148,7 @@ Route::group(['prefix' => 'teacher', 'middleware' => ['auth:sanctum','teacher']]
         Route::get('students/{course}', [InstituesTeacherController::class, 'showStudents']);
         Route::get('courses-history', [InstituesTeacherController::class, 'coursesHistory']);
     });
+    Route::post('logout', [HomeTeacherController::class, 'logout']);
 });
 
 Route::group(['prefix' => 'student', 'middleware' => ['auth:sanctum','student']], function () {

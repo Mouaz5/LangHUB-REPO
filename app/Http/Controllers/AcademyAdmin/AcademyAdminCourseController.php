@@ -116,7 +116,7 @@ class AcademyAdminCourseController extends Controller
 				'status' => 205,
 				'message' => 'the selected value of price is invalid',
 				'data' => []
-			]);
+			], 202);
 		}
 		
 		$course->seats = $request->seats;

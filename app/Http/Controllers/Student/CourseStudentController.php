@@ -55,12 +55,14 @@ class CourseStudentController extends Controller
 			$user= $teacher->user()->first();
 			$teacher['email'] = $user->email ;
 			$course['teacher'] = $teacher ;
-			$exam = $course->exam()->first() ;
-			if ($exam != null)
-				if ($exam->activated == true )
-					$course['hasActivatExam'] = 1 ;
-				else 	$course['hasActivatExam'] = 0 ;  
-			$course['hasNotification'] = $this->hasNotification($course) ;
+			$exam = $course->exam()->get() ;
+			if (count($exam) == 0) {
+				$course['hasActivatExam'] = 0;
+			}else {
+				if ($exam->activated == true)
+					$course['hasActivatExam'] = 1;
+			}
+			//$course['hasNotification'] = $this->hasNotification($course);
 		}
 		$offers = $student->offers()
 		->wherePivot('approved' , 1)

@@ -7,6 +7,7 @@ use App\Models\Academy;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Student\RateController;
+use Illuminate\Support\Facades\Auth;
 
 class HomeTeacherController extends Controller
 {
@@ -26,9 +27,13 @@ class HomeTeacherController extends Controller
         ]);
     }*/
 
-    public function test() {
-        $academies = Course::with('rate');
-        return $academies;
+    public function logout() {
+        Auth::logout();
+        return response()->json([
+            'status' => 200,
+            'message' => 'You have been logged out.',
+            'data' => [],
+        ]);
     }
     public function academySearching(Request $request) {
         $request->validate([
