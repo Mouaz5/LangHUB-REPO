@@ -34,28 +34,38 @@ class AcademyAdminCourseController extends Controller
 		if ($request->hasFile('course_image')) {
 			$imageUrl = $this->uploadImage($request);
 		}
-		
+		if ($request->hours < 0) {
+			return response()->json([
+				'status' => 205,
+				'message' => 'the selected value for hours invalid',
+				'data' => []
+			]);
+		}
 		$admin = AcademyAdminstrator::where('user_id' , auth()->id())->first();
 		$academy = $admin->academy()->first();
 		if ($request->language == 'english'&&$academy->english == false)
 		return response()->json([
 			'status' => 201 ,
 			'message' => 'your academy dont have a english',
+			'data' => []
 		]);
 		if ($request->language == 'french'&&$academy->french == false)
 		return response()->json([
 			'status' => 201 ,
 			'message' => 'your academy dont have a french',
+			'data' => []
 		]);
 		if ($request->language == 'spanish'&&$academy->spanish == false)
 		return response()->json([
 			'status' => 201 ,
 			'message' => 'your academy dont have a spanish',
+			'data' => []
 		]);
 		if ($request->language == 'germany'&&$academy->germany == false)
 		return response()->json([
 			'status' => 201 ,
 			'message' => 'your academy dont have a germany',
+			'data' => []
 		]);
 		$course = $academy->courses()->create($validatedData + [
 			'course_image' => $imageUrl,
@@ -99,12 +109,17 @@ class AcademyAdminCourseController extends Controller
 			'friday'=>'required', 
 			'start_friday'=>'required', 
 			'end_friday'=>'required',
-			'language' => 'required|string',
-			'name' => 'required|string'
+			
 		]);
-		$course->language = $request->language ;
-		$course->name = $request->name ;
-		$course->seats = $request->seats ;
+		if ($request->price < 0 || $request->price > 100) {
+			return response()->json([
+				'status' => 205,
+				'message' => 'the selected value of price is invalid',
+				'data' => []
+			]);
+		}
+		
+		$course->seats = $request->seats;
 		$course->start_date = $request->start_date;
 		$course->end_date = $request->end_date;
 		$course->price = $request->price;
@@ -212,8 +227,15 @@ class AcademyAdminCourseController extends Controller
 		$academy = Academy::where('id' , $course->academy_id)->first();
 		$teachers = $academy->teachers()->get() ;
 		$data = [];
+		
 		// return $teachers ;
+		if(count($teachers) == 0) return response()->json([
+			'status' => 200 ,
+			'message' => 'there is no teacher in this academy' ,
+			'data' => $teachers
+		]);
 		foreach($teachers as $teacher){
+			return "ppp";
 			if ($course == null)echo " null " ;
 			
 			if($this->checkTime( $course,$courseTime , $teacher)){
@@ -243,12 +265,9 @@ class AcademyAdminCourseController extends Controller
 	
 		$teacherTime = $teacherAcademy->schedules()->first();
 		if ($teacherTime === null) {
-			echo 'ahmed mohsen';
 			return false;	
 		}
-		if ($courseTime == null)
-		{
-			echo " ahmadd mohssssen " ;
+		if ($courseTime == null) {
 			return 0 ;
 		}
 		//saturday

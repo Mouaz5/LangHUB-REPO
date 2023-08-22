@@ -11,10 +11,11 @@ class Certificate extends Model
     protected $table = 'certificates';
 
     protected $fillable = [
-     'academy_name','student_name','course_level' , 'mark' ,'image' , 'receive_date'
+     'academy_name','student_name','course_level' , 
+     'mark' ,'image' , 'receive_date', 'academy_id', 'student_id'
     ];
     protected $hidden = [
-        'student_id' , 'academy_id' , 'created_at' , 'updated_at'
+        'student_id' ,'academy_id', 'created_at', 'updated_at'
     ];
 
     public function academy() {

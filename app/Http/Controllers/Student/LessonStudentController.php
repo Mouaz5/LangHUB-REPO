@@ -16,6 +16,7 @@ class LessonStudentController extends Controller
     public function lessons(Course $course) {
           
             $student_id = Student::where('user_id' , auth()->id())->first()['id'];
+            
             $test = CourseStudent::where('student_id' , $student_id)
             ->where('course_id' , $course->id)
             ->first() ;

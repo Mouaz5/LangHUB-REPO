@@ -77,6 +77,9 @@ class OfferStudentController extends Controller
             break ;
             $i++ ;
         }
+        foreach($offers as $offer){
+            $offer->load('academy');
+        }
         if ( count($offers) > 10){
             $data[0] = $offers[0] ;
             for($l = 1; $l<10 ;$l++){
@@ -90,7 +93,7 @@ class OfferStudentController extends Controller
        }else {
         return response()->json([
             'status' => 200 ,
-            'message' => 'done 1' ,
+            'message' => 'done ' ,
             'data' => $offers
         ]) ;
        }
@@ -106,6 +109,7 @@ class OfferStudentController extends Controller
         $offers = Offer::where('name' ,'like' , "%$request->search_key%")->get();
         foreach($offers as $offer){
             $offer->load('academy');
+            
         }
         return response()->json([
             'status' => 200,

@@ -43,23 +43,38 @@ class CourseStudentController extends Controller
 	//show student enrolled courses
 	public function enrolledCourses()
 	{
+		//
 		$student = Student::where('user_id', auth()->id())->first();
 		$courses = $student->courses()
-			->with('teacher')
 			->with('academy:id,name')
 			->with('annualSchedule')
 			->get();
 		foreach($courses as $course){
 			$course['is_offer'] = false ;
+			$teacher = $course->teacher()->first();
+			$user= $teacher->user()->first();
+			$teacher['email'] = $user->email ;
+			$course['teacher'] = $teacher ;
+			$exam = $course->exam()->first() ;
+			if ($exam != null)
+				if ($exam->activated == true )
+					$course['hasActivatExam'] = 1 ;
+				else 	$course['hasActivatExam'] = 0 ;  
+			$course['hasNotification'] = $this->hasNotification($course) ;
 		}
 		$offers = $student->offers()
 		->wherePivot('approved' , 1)
-		->with('teacher')
 		->with('academy:id,name')
 		->with('annualSchedules')
 		->get();
 		foreach($offers as $offer){
+			$teacher = $offer->teacher()->first();
+			$user= $teacher->user()->first();
+			$teacher['email'] = $user->email ;
+			$offer['teacher'] = $teacher ;
 			$offer['is_offer'] = true ;
+			$offer['hasActivatExam'] = 0;
+			$course['hasNotification'] = 1;
 		}
 		$combinedList = $courses->merge($offers);
 		return response()->json([
@@ -67,6 +82,17 @@ class CourseStudentController extends Controller
 			'message' => 'success',
 			'data' => $combinedList->all()
 		]);
+	}
+	public function hasNotification(Course $course){
+		$lessons = $course->lessons()->get();
+		foreach ($lessons as $lesson){
+			$notifications = $lesson->notification()->get();
+			foreach($notifications as $notification){
+				if ($notification->read == false)
+				return 1 ;
+			}
+		}
+		return 0 ;
 	}
 	//Cancel a student's enrollment in a course
 	public function cancelCourseEnrollment(Request $request, Course $course)
@@ -107,7 +133,7 @@ class CourseStudentController extends Controller
 			$i++;
 		}
 		
-		$student->courses()->detach($course->id);
+		
 		$academy = $course->academy()->first();
 		if ($mark >= 50)
 		Certificate::create([
@@ -116,19 +142,28 @@ class CourseStudentController extends Controller
 			'mark' => $mark ,
 			'course_level' => $course['name'] ,
 			'image' => $course->course_image ,
-			'receive_date' => now()
+			'receive_date' => now(),
+			'academy_id' => $academy->id,
+			'student_id' => $student->id
+		
 		]);
 		if ($mark<50)
 		$message = " sorry you failed in this exams and your mark is $mark ";
 		else $message = "good luck you passed this exam and your mark is $mark now you can show your certicficate in your profile" ;
+		$student->courses()->detach($course->id);
 		return response()->json([
 			'status' => 200 ,
 			'message' => $message 
 		]);
 	}
 	public function getQuestions(Course $course) {
-		if ($course->hasExam == 1) {
-			$exam = $course->exam()->first();
+		$exam = $course->exam()->first();
+		if ($exam == null)
+			return response()->json([
+				'status' => 200 ,
+				'message' => 'this course dose not have an exam'
+			]);
+		if  ($exam->activated == true ){
 			$questions = $exam->questions()->get();
 			$questions = $questions->map(function ($item){
 				return collect($item)->except('created_at', 'updated_at');
@@ -146,3 +181,4 @@ class CourseStudentController extends Controller
 		}
 	}
 }
+

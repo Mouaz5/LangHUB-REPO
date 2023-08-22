@@ -42,6 +42,17 @@ class NotificationController extends Controller
 			'data' => $notification
 		]);
 	}
+	public function hasNotification(Course $course){
+		$lessons = $course->lessons()->get();
+		foreach ($lessons as $lesson){
+			$notifications = $lesson->notification()->get();
+			foreach($notifications as $notification){
+				if ($notification->read == false)
+				return 1 ;
+			}
+		}
+		return 0 ;
+	}
     public function showLessonNotification(LessonNotification $lessonNotification){
         $lesson = $lessonNotification->lesson()->get();
 		$lessonNotification->read = true ;

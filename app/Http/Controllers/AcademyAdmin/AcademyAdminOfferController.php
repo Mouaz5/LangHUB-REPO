@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\AcademyAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Academy;
 use App\Models\AcademyAdminstrator;
 use App\Models\Offer;
 use Illuminate\Http\Request;
@@ -96,6 +97,16 @@ class AcademyAdminOfferController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'deleted successfully'
+        ]);
+    }
+    public function teachers(){
+        $admin = AcademyAdminstrator::where('user_id' , auth()->id())->first();
+        $academy = $admin->academy()->first();
+        $teachers = $academy->teachers()->get();
+        return response()->json([
+            'status' => 200,
+            'message' => 'done successfully' ,
+            'data' => $teachers
         ]);
     }
 }

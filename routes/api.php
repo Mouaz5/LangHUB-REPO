@@ -29,6 +29,7 @@ use App\Http\Controllers\Student\RateController;
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SuperAdmin\RequestMangeController;
+use App\Models\Academy;
 use App\Models\AcademyStudent;
 use App\Models\OfferStudent;
 
@@ -103,6 +104,7 @@ Route::group(['prefix' => 'academy-admin', 'middleware' => ['auth:sanctum','acad
         Route::delete('/reject-student/{student}' , [AcademyAdminStudentController::class , 'rejectStudent']);
     });
     Route::group(['prefix' => 'offers'], function() {
+        Route::get('teachers' , [AcademyAdminOfferController::class , 'teachers']) ;
         Route::get('/' , [AcademyAdminOfferController::class , 'index']);
         Route::post('/add' , [AcademyAdminOfferController::class , 'addOffer']);
         Route::delete('/deleteOffer/{offer}' , [AcademyAdminOfferController::class , 'deleteOffer']);
@@ -195,7 +197,7 @@ Route::group(['prefix' => 'student', 'middleware' => ['auth:sanctum','student']]
     Route::group(['prefix' => 'offers'], function() {
         Route::get('/' , [OfferStudentController::class , 'index']);
         Route::get('/requests' , [OfferStudentController::class , 'showOfferRequests']);
-        Route::get('/enroll/{offer}' , [OfferStudentController::class , 'enrollToOffer']);
+        Route::post('/enroll/{offer}' , [OfferStudentController::class , 'enrollToOffer']);
         Route::delete('delete-request/{offer}' ,[OfferStudentController::class,'delete']);
         Route::post('ten' , [OfferStudentController::class , 'tenOffers']);
         Route::post('search' , [OfferStudentController::class , 'search']);

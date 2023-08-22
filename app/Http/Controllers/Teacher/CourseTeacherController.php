@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
+use App\Models\Certificate;
 use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\CourseStudent;
 use App\Models\Mark;
+use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
 
@@ -89,6 +91,7 @@ class CourseTeacherController extends Controller
 		]);
 	}
 	public function addMarks(Request $request, Course $course) {
+		
 		$data = $request->all();
 		$myArray = array($data);
 		
@@ -102,13 +105,20 @@ class CourseTeacherController extends Controller
 				}
 			}
 		}
+		$academy = $course->academy()->first();
 		foreach ($myArray as $value) {
 			foreach($value as $subKey => $subValue) {
-				$mark = new Mark();
-				$mark->marks = $subValue;
-				$mark->student_id = $subKey;
-				$mark->course_id = $course->id;
-				$mark->save();
+				$student = Student::findOrFail($subKey);
+				Certificate::create([
+					'student_name' => "$student->first_name . $student->last_name",
+					'academy_name' => $academy->name ,
+					'mark' => $subValue ,
+					'course_level' => $course['name'] ,
+					'image' => $course->course_image ,
+					'receive_date' => now(),
+					'academy_id' => $academy->id,
+					'student_id' => $student->id
+				]);
 			}
 		}
 		return response()->json([
@@ -132,18 +142,17 @@ class CourseTeacherController extends Controller
 	    	'students' => $students
 	    ]);
 	}
-	public function activateCourseExam(Course $course) {
-		if ($course->hasExam == 1) {
+	public function activateCourseExam(Course $course){
+		$exam = $course->exam()->first();
+		if ($exam == null)return response()->json([
+			'status' =>  200,
+			'message' => 'this course dose not have exam'
+		]);
+		$exam->activated = true ;
+		$exam->save();
 			return response()->json([
 				'status' => 200,
-				'message' => 'the exam for this course is already activated..'
+				'message' => 'activated successfully'
 			]);
-		}
-		$course->hasExam = 1;
-		$course->save();
-		return response()->json([
-			'status' => 200,
-			'message' => 'Exam has been activated succfully..'
-		]);
 	}
 }

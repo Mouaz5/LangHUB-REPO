@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\AcademyAdmin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Academy;
 use App\Models\AcademyAdminstrator;
 use App\Models\Course;
-use App\Models\Question;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
 
 class AcademyAdminExamController extends Controller
 {
@@ -20,7 +17,7 @@ class AcademyAdminExamController extends Controller
             'status' => 201 ,
             'message' => 'this course is not yours ',
         ]);
-        $exam = $course->exams()->first();
+        $exam = $course->exam()->first();
         $exam->load('questions');
         return response()->json([
             'status' => 200 ,

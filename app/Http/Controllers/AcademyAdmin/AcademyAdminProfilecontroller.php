@@ -72,12 +72,14 @@ class AcademyAdminProfilecontroller extends Controller
 	    ]);
 	    if (!Hash::check($request->current_password, $admin->password)) {
 	        return response()->json([
-	        	'current_password' => 'The current password is incorrect',
+				'status' => 205,
+	        	'message' => 'The current password is incorrect',
 	        ]);
 	    }
 	    $admin->update(['password' => Hash::make($validatedData['new_password'])]);
 	    return response()->json([
-	    	'success' => 'Password changed successfully'
+			'status' => 200,
+	    	'message' => 'Password changed successfully'
 	    ]);
 	}
 	public function uodateRequestTime(Request $request){

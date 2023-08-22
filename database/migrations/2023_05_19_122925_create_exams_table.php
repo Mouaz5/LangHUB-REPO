@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('exams', function (Blueprint $table) {
             $table->id();
+            $table->boolean('activated')->default(0);
             $table->foreignId('course_id')->constrained('courses')->cascadeOnDelete();
             $table->timestamps();
         });
